@@ -1,39 +1,64 @@
 # frozen_string_literal: true
 
 # BEGIN
-module  Model
-    
-    def self.attribute(attribute_name, options={})
-      attribute ||= {}
-      attribute[attribute_name] = options
-    end
+require 'date'
 
-    # save parameters to hash
-    def initialize(params={})
-      @attributes = params
-      params.each do |name, value|
-        @attributes[name] = value
+module  Model
+  
+  def self.included(base)
+    base.extend ClassMethods
+    base.instance_variable_set(:@attributes, {})
+  end
+  
+  module ClassMethods
+    def attribute(name, options = {})
+      @attributes[name] = options
+
+      define_method(name) do
+        value = instance_variable_get("@#{name}")
+        convert(value, options[:type])
+      end
+
+      define_method("#{name}=") do |value|
+        instance_variable_set("@#{name}", value)
       end
     end
-    
 
-    # define_method(:attribute) do |name, options|
-    #   options ||={}
-    # end
+    def attributes
+      @attributes
+    end
+  end
 
-  attr_accessor :attributes, :id, :title, :body, :created_at, :published
+  def initialize(attrs = {})
+    self.class.attributes.each do |name, _|
+      value = attrs[name]
+      send("#{name}=", value) if value
+    end
+  end
 
-  # define_method 'attributes' do |attribute_hash|
-    
-  # end
+  def attributes
+    result = {}
+    self.class.attributes.each do |name, options|
+      value = send(name)
+      result[name] = value
+    end
+    result
+  end
+
+  def convert(value, type)
+    case type
+    when :string
+      value.to_s
+    when :integer
+      value.to_i
+    when :datetime
+      DateTime.parse(value)
+    when :boolean
+      !!value
+    else
+      value
+    end
+  end
 end
-
-# just test to see parameters saving to hash
-class TTT
-  include Model
-end
-
-model = TTT.new(id: "some", title: "titul")
-puts model.attributes
 
 # END
