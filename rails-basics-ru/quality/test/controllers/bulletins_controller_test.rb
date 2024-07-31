@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-class ArticlesControllerTest < ActionDispatch::IntegrationTest
+class BulletinsControllerTest < ActionDispatch::IntegrationTest
   self.use_transactional_tests = true
   test 'opens bulletins' do
     get bulletins_url
