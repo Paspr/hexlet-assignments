@@ -1,0 +1,9 @@
+bulletin1:
+  title: Bull1
+  body: Bull1_body
+  published: true
+
+bulletin2:
+  title: Bull2
+  body: Bull2_body
+  published: true
