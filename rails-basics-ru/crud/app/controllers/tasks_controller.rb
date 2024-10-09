@@ -45,7 +45,7 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
 
     if @task.destroy
-      flash[:success] = 'task was successfully deleted'
+      flash[:success] = 'Task was successfully deleted'
       redirect_to task_path
     else
       flash[:failure] = 'Task cannot be deleted'
